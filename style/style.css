@@ -1,0 +1,9 @@
+.cell{
+    height: 30px;
+    width: 30px;
+    border-style: solid;
+}
+.controlpanel{
+    height: 150px;
+    width: 250px;
+}
