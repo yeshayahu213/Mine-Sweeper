@@ -11,7 +11,14 @@
         <button class="levelbutton" onclick="onChangeLevel('beginner')">beginner</button>
         <button class="levelbutton" onclick="onChangeLevel('medium')">medium</button>
         <button class="levelbutton" onclick="onChangeLevel('expert')">expert</button>
-        <button class="face" >face</button>
+        <button class="face" >
+            <img class="img faceimg" src="images/normal.jpeg" alt="">
+            </button>
+            <button  onclick="onhint(0,this)"> <img class="img lightimg0"  src="images/light.jpeg" alt=""></button>
+            <button onclick="onhint(1,this)"> <img class="img lightimg1"  src="images/light.jpeg" alt=""></button>
+            <button onclick="onhint(2,this)"> <img class="img lightimg2"  src="images/light.jpeg" alt=""></button>
+            <button onclick="onManualMode()">manualmode</button>
+            <button class="complete" onclick="completeManualMode()"  >complete manual mines</button>
     </div>
     <div  class="gameplay" ></div>
     <script src="js/game.js"></script>

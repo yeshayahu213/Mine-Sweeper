@@ -1,6 +1,11 @@
 'use strict'
 
 function renderBoard(mat) {
+    if(gGame.isON){
+     var  elFace=  document.querySelector('.faceimg')
+     console.log(elFace);
+     elFace.src='images/normal.jpeg'
+    }
 
     var strHTML = '<table><tbody>'
     for (var i = 0; i < mat.length; i++) {
@@ -12,7 +17,7 @@ function renderBoard(mat) {
              
             
               if(gBoard[i][j].isShown && !gBoard[i][j].isMine)   cell=gBoard[i][j].minesAroundCount
-             else if(gBoard[i][j].isShown && gBoard[i][j].isMine ||  (gBoard[i][j].isExplode))  cell='m'
+             else if(gBoard[i][j].isShown && gBoard[i][j].isMine ||  (gBoard[i][j].isExplode))  cell='<img class="img" src="images/mine.jpeg" alt="">'
              else if(!gBoard[i][j].isShown && gBoard[i][j].isMarked) cell='f'
           
          // else if(mat[i][j].isMine===true) cell='m'

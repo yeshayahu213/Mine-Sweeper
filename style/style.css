@@ -1,9 +1,33 @@
+table{
+    margin-top: 50px;
+    margin-inline: auto;
+background-color: blueviolet;
+}
 .cell{
-    height: 30px;
-    width: 30px;
+    height: 70px;
+    width: 70px;
     border-style: solid;
+    background-color: aqua;
+    font-size: 30px;
 }
 .controlpanel{
     height: 150px;
-    width: 250px;
+    width: 350px;
+    margin-inline: auto;
+}
+button{
+    
+        height: 70px;
+        width: 70px;
+        border-style: solid;
+        background-color: aqua;
+
+}
+.img{
+    height: 40px;
+    width: 40px;
+
+}
+.complete{
+    visibility: hidden;
 }
