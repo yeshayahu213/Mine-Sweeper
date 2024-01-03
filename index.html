@@ -7,19 +7,50 @@
     <title>Document</title>
 </head>
 <body onload="onInit()">
+    <table>
+        <tbody>
+            <tr>
+                <td class="cell"> <button class="levelbutton" onclick="onChangeLevel('beginner')">beginner</button></td>
+                <td class="cell"> <button class="levelbutton" onclick="onChangeLevel('medium')">medium</button></td>
+                <td class="cell"> <button class="levelbutton" onclick="onChangeLevel('expert')">expert</button></td>
+                <td class="cell countflags">count flags 0</td>
+                <td class="cell" onclick="exterminator()">exterminator</td>
+           </tr>
+           <tr>
+          <td class="cell"> <button  onclick="onhint(0,this)"> <img class="img lightimg0"  src="images/light.jpeg" alt=""></button></td>
+          <td class="cell"><button onclick="onhint(1,this)"> <img class="img lightimg1"  src="images/light.jpeg" alt=""></button></td>
+            <td class="cell"><button onclick="onhint(2,this)"> <img class="img lightimg2"  src="images/light.jpeg" alt=""></button></td>
+            <td class="cell"><button onclick="onArchiveGame()">undo</button></td>
+            <td class="cell clock">000</td>
+           </tr>
+           <tr>
+            <td class="cell">
+                <button class="face" >
+                    <img class="img faceimg" src="images/normal.jpeg" alt="">
+                    </button>
+            </td>
+            <td class="cell">
+                <button onclick="onManualMode()">manualmode</button> </td>
+                <td class="cell">
+                    <button class="complete" onclick="completeManualMode()"  >complete manual mines</button>
+                </td>
+                <td class="cell">
+                    <button class="safeclick" onclick="onSafeClick()">
+                        <p class="safecelltext">click safe 3 click avialble</p>
+                    </button>
+                </td>
+                <td class="cell" onclick="onMegaHintMode()">negahint</td>
+               
+           </tr>
+        </tbody>
+    </table>
     <div class="controlpanel">
-        <button class="levelbutton" onclick="onChangeLevel('beginner')">beginner</button>
-        <button class="levelbutton" onclick="onChangeLevel('medium')">medium</button>
-        <button class="levelbutton" onclick="onChangeLevel('expert')">expert</button>
-        <button class="face" >
-            <img class="img faceimg" src="images/normal.jpeg" alt="">
-            </button>
-            <button  onclick="onhint(0,this)"> <img class="img lightimg0"  src="images/light.jpeg" alt=""></button>
-            <button onclick="onhint(1,this)"> <img class="img lightimg1"  src="images/light.jpeg" alt=""></button>
-            <button onclick="onhint(2,this)"> <img class="img lightimg2"  src="images/light.jpeg" alt=""></button>
-            <button onclick="onManualMode()">manualmode</button>
-            <button class="complete" onclick="completeManualMode()"  >complete manual mines</button>
-    </div>
+        
+           
+
+            
+
+        </div>
     <div  class="gameplay" ></div>
     <script src="js/game.js"></script>
     <script src="js/util.js"></script>

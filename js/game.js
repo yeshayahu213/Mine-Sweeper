@@ -7,24 +7,34 @@ var gGame={
     shownCount:0,
     markedCount:0,
     secsPassed:0,
-    life:2,
+    megaHintMode:false,
+    life:1,
     hintMode:false,
-
+safeClick:3,
     manualMode:false
 }
-var gManualMines
+var gManualMines=[]
 var gBoard
+var gArchive=[]
+var gCurrentMove=0
+var gMegaHintArr=[]
+var gShowClock=true
+var gTime=0
 
 function onInit(){
     gGame.isON=true
+    
     gBoard=createBoard()
     renderMines()
     setMineNegsCount()
 renderBoard(gBoard)
+showTimer()
+
 
 }
 
 function createBoard(){
+    gGame.safeClick=3
     var board=[]
     for(i=0;i<glevel.size;i++){
         board.push([])
@@ -68,6 +78,9 @@ function setMineNegsCount(){
 
 function onCellClicked(elCell, i,j,ev){
     if(gGame.hintMode) helpUser(i,j)
+    if(gGame.megaHintMode){
+        megaHint(i,j)
+        return}
     if(gGame.manualMode) {
         onManualMine(i,j)
         return}
@@ -75,8 +88,10 @@ function onCellClicked(elCell, i,j,ev){
     if(gBoard[i][j].isMarked || !gGame.isON) return 
 
     if(gBoard[i][j].isMarked || gBoard[i][j].isShown)return
-
+    archiveGame()
+   
     if (gBoard[i][j].isMine===true) {
+
         gGame.life--
         if(gGame.life>=0) {
             gBoard[i][j].isExplode=true
@@ -100,6 +115,7 @@ function onCellClicked(elCell, i,j,ev){
             gBoard[indexWidth][indexHeight].isShown=true
         
         }}}
+        
         checkVictory()
 renderBoard(gBoard)
 
@@ -136,6 +152,7 @@ var element=document.querySelector(`.cell-${i}-${j}`)
         gBoard[i][j].isMarked=false
     }
     else{
+       
         if(gBoard[i][j].isShown || gGame.markedCount===glevel.mines)return
 
         element.innerText='f'
@@ -143,10 +160,12 @@ var element=document.querySelector(`.cell-${i}-${j}`)
         gBoard[i][j].isMarked=true
         checkVictory()
     }
-
+    document.querySelector('.countflags').innerText=`count flags ${gGame.markedCount}`
+    archiveGame()
 }
 
 function onBlowUp(){
+
    gGame.isON=false
     for(var i=0;i<glevel.size;i++){
         for(var j=0;j<glevel.size;j++){
@@ -158,14 +177,17 @@ function onBlowUp(){
         }
 
     }
-    var elFace=document.querySelector(".img")
+    var elFace=document.querySelector(".faceimg")
     elFace.src="images/sad.jpeg"
+   
     renderBoard(gBoard)
+    console.log(gClockInterval);
+    clearInterval(gClockInterval)
 }
 
 function renderMines(){
    
-    if(gManualMines){
+    if(gManualMines.length>0){
         for (var i = 0; i < gManualMines.length; i++) {
        gBoard[gManualMines[i].i][gManualMines[i].j].isMine=true
             
@@ -193,6 +215,7 @@ function checkVictory(){
    gGame.isON=false
  var elFace= document.querySelector(".img")
  elFace.src="images/happy.jpeg"
+ 
   }
   
 }}
@@ -260,20 +283,130 @@ function onManualMode(){
 }
 
 function onManualMine(i,j){
-    if(gGame.isON===false) return
-    
-    
+   if(gGame.manualMode===false ) return
+    if(gBoard[i][j].isExplode){
+        var searchidx=gManualMines.findIndex((idx=>idx.i===i && idx.j===j))
+        gManualMines.splice(searchidx,1)
+        gBoard[i][j].isExplode=false
+        renderBoard(gBoard)
+        return
+    }
+    if( gManualMines.length===glevel.mines) return
     gManualMines.push({i:i,j:j})
+    gBoard[i][j].isExplode=true
+renderBoard(gBoard)
     console.log(gManualMines);
     if(gManualMines.length===glevel.mines){
-        console.log('e');
+      
         document.querySelector('.complete').style.visibility='visible';
-        gGame.manualMode=false
-        gGame.isON=false
+      
     }
 }
 
 function completeManualMode(){
+    gGame.manualMode=false
+   
     document.querySelector('.complete').hidden=true
+    for(i=0;i<gManualMines.length;i++){
+        gBoard[gManualMines[i].i][gManualMines[i].j].isExplode=false
+    }
     onInit()
+}
+
+function onSafeClick(){
+    if(gGame.safeClick===0)return
+    gGame.safeClick--
+    document.querySelector('.safecelltext').innerText=`click safe ${gGame.safeClick} click avialble`
+    var cafeArr=[]
+    for (var i = 0; i < glevel.size; i++) {
+for(var j=0;j<glevel.size;j++){
+    if(!gBoard[i][j].isMine && !gBoard[i][j].isShown){
+        cafeArr.push({i:i,j:j})
+    }
+}
+    }
+    var cafeCell=cafeArr[getRandomIntInclusive(0,cafeArr.length-1)]
+    gBoard[cafeCell.i][cafeCell.j].isShown=true
+    renderBoard(gBoard)
+    setTimeout(() => {
+        gBoard[cafeCell.i][cafeCell.j].isShown=false
+        renderBoard(gBoard)
+    }, 3000);
+}
+
+function archiveGame(){
+  var board=structuredClone(gBoard)
+    gArchive.push(board)
+   
+}
+
+function onArchiveGame(){
+
+    
+    gBoard=gArchive[gArchive.length-1]
+    console.log(gBoard);
+    renderBoard(gBoard)
+    gArchive.pop()
+    var countBackLife=0
+    for (var i = 0; i < gBoard.length; i++) {
+       
+        for(var j = 0; j < gBoard.length; j++){
+            if(gBoard[i][j].isExplode){
+                countBackLife++
+            }
+        }
+    }
+    console.log(countBackLife);
+   gGame.life=1-countBackLife
+}
+
+function onMegaHintMode(){
+    gGame.megaHintMode=true
+}
+
+function megaHint(i,j){
+    gMegaHintArr.push({i:i,j:j})
+
+  if (gMegaHintArr.length >1 ){
+    for(var i=gMegaHintArr[0].i;i<=gMegaHintArr[1].i;i++){
+        for(var j=gMegaHintArr[0].j;j<=gMegaHintArr[1].j;j++){
+            gBoard[i][j].isShown=true
+        }
+    }
+    renderBoard(gBoard)
+    setTimeout(() => {
+        for(var i=gMegaHintArr[0].i;i<=gMegaHintArr[1].i;i++){
+            for(var j=gMegaHintArr[0].j;j<=gMegaHintArr[1].j;j++){
+                gBoard[i][j].isShown=false
+            }
+        }
+        renderBoard(gBoard)
+        gGame.megaHintMode=false
+    }, 2000);
+  }
+
+
+}
+
+function showTimer(){
+    setInterval(() => {
+        if(!gGame.isON)return
+        gTime++
+        var elTimer=  document.querySelector(".clock")
+        elTimer.innerText=gTime
+    }, 1000);
+   
+}
+
+function exterminator(){
+    var minesArr=[]
+    for (var i = 0; i < gBoard.length; i++) {
+     for   (var j = 0; j< gBoard.length; j++){
+        if(gBoard[i][j].isMine)minesArr.push({i:i,j:j})
+     }
+        
+    }
+    var selectdMine=minesArr[getRandomIntInclusive(0,minesArr.length-1)]
+    gBoard[selectdMine.i][selectdMine.j].isMine=false
+    setMineNegsCount()
 }
