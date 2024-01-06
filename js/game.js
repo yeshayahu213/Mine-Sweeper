@@ -76,7 +76,7 @@ function setMineNegsCount(){
 }
 }
 
-function onCellClicked(elCell, i,j,ev){
+function onCellClicked( i,j,ev){
     if(gGame.hintMode) helpUser(i,j)
     if(gGame.megaHintMode){
         megaHint(i,j)
@@ -84,14 +84,15 @@ function onCellClicked(elCell, i,j,ev){
     if(gGame.manualMode) {
         onManualMine(i,j)
         return}
- 
+
     if(gBoard[i][j].isMarked || !gGame.isON) return 
 
     if(gBoard[i][j].isMarked || gBoard[i][j].isShown)return
     archiveGame()
-   
-    if (gBoard[i][j].isMine===true) {
-
+    
+    gBoard[i][j].isShown=true
+    if (gBoard[i][j].isMine && gBoard[i][j].isShown ) {
+        
         gGame.life--
         if(gGame.life>=0) {
             gBoard[i][j].isExplode=true
@@ -100,21 +101,15 @@ function onCellClicked(elCell, i,j,ev){
        
         return}
 
-       
-        if(gBoard[i][j].minesAroundCount>0) {
-            gBoard[i][j].isShown=true
-            gGame.shownCount++
-         
-            }
-
-        else if (gBoard[i][j].minesAroundCount===0) {
-            for (var indexWidth = i - 1; indexWidth <= i + 1; indexWidth++) {
-        if(indexWidth === -1 || indexWidth > glevel.size - 1) continue;
-        for (var indexHeight = j - 1; indexHeight <= j + 1; indexHeight++) {
-            if(indexHeight === -1 || indexHeight > glevel.size - 1) continue;
-            gBoard[indexWidth][indexHeight].isShown=true
+        gBoard[i][j].isShown=true
         
-        }}}
+
+         if (gBoard[i][j].minesAroundCount===0 ) {
+    
+            
+            onExplodeNeighbur(i,j)
+        
+                    }
         
         checkVictory()
 renderBoard(gBoard)
@@ -155,17 +150,18 @@ var element=document.querySelector(`.cell-${i}-${j}`)
        
         if(gBoard[i][j].isShown || gGame.markedCount===glevel.mines)return
 
-        element.innerText='f'
+        element.innerText='🚩'
         gGame.markedCount++
         gBoard[i][j].isMarked=true
         checkVictory()
     }
-    document.querySelector('.countflags').innerText=`count flags ${gGame.markedCount}`
+    document.querySelector('.countflags').innerText=`🚩 ${gGame.markedCount}`
     archiveGame()
 }
 
 function onBlowUp(){
-
+var boom=new Audio ('images/boom.mpeg')
+boom.play
    gGame.isON=false
     for(var i=0;i<glevel.size;i++){
         for(var j=0;j<glevel.size;j++){
@@ -177,12 +173,13 @@ function onBlowUp(){
         }
 
     }
-    var elFace=document.querySelector(".faceimg")
-    elFace.src="images/sad.jpeg"
+    var elFace=document.querySelector(".face")
+    console.log(elFace);
+    elFace.innerText='🥹'
+    // "images/sad.jpeg"
    
     renderBoard(gBoard)
-    console.log(gClockInterval);
-    clearInterval(gClockInterval)
+   
 }
 
 function renderMines(){
@@ -213,8 +210,9 @@ function checkVictory(){
    }
    if(count===glevel.size * glevel.size){
    gGame.isON=false
- var elFace= document.querySelector(".img")
- elFace.src="images/happy.jpeg"
+ var elFace= document.querySelector(".face")
+ elFace.innerText='😄'
+
  
   }
   
@@ -249,8 +247,7 @@ function onhint(num,el){
     if(el.classList.contains("used")) return
   el.classList.add("used")
     
-    elImg=document.querySelector(`.lightimg${num}`)
-    elImg.src="images/brokelight.jpeg"
+  el.innerText='🎯'
     gGame.hintMode=true
 
 }
@@ -297,16 +294,20 @@ function onManualMine(i,j){
 renderBoard(gBoard)
     console.log(gManualMines);
     if(gManualMines.length===glevel.mines){
-      
-        document.querySelector('.complete').style.visibility='visible';
+      elcomplete= document.querySelector('.cellcomplete')
+        var strhtml=`<button class="complete" onclick="completeManualMode()" >complete manual mines </button>`
+        elcomplete.innerHTML=strhtml
       
     }
 }
 
 function completeManualMode(){
+    if(gManualMines.length !== glevel.mines) return
     gGame.manualMode=false
-   
-    document.querySelector('.complete').hidden=true
+   var elcomplete=document.querySelector('.cellcomplete')
+   console.log(elcomplete);
+ var strHTML=`<button class="complete" onclick="completeManualMode()" ><s>complete manual mines</s> </button>`
+ elcomplete.innerHTML=strHTML
     for(i=0;i<gManualMines.length;i++){
         gBoard[gManualMines[i].i][gManualMines[i].j].isExplode=false
     }
@@ -392,8 +393,8 @@ function showTimer(){
     setInterval(() => {
         if(!gGame.isON)return
         gTime++
-        var elTimer=  document.querySelector(".clock")
-        elTimer.innerText=gTime
+        var elTimer=  document.querySelector(".time")
+        elTimer.innerText=`🕙 ${gTime}`
     }, 1000);
    
 }
@@ -410,3 +411,14 @@ function exterminator(){
     gBoard[selectdMine.i][selectdMine.j].isMine=false
     setMineNegsCount()
 }
+
+function onExplodeNeighbur(i,j){
+    for (var indexWidth = i - 1; indexWidth <= i + 1; indexWidth++) {
+        if(indexWidth === -1 || indexWidth > glevel.size - 1) continue;
+        for (var indexHeight = j - 1; indexHeight <= j + 1; indexHeight++) {
+            if(indexHeight === -1 || indexHeight > glevel.size - 1) continue;
+       
+          onCellClicked(indexWidth,indexHeight)
+}}
+}
+

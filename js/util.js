@@ -2,9 +2,9 @@
 
 function renderBoard(mat) {
     if(gGame.isON){
-     var  elFace=  document.querySelector('.faceimg')
+     var  elFace=  document.querySelector('.face')
      console.log(elFace);
-     elFace.src='images/normal.jpeg'
+     elFace.innerText='🙂'
     }
 
     var strHTML = '<table><tbody>'
@@ -18,14 +18,14 @@ function renderBoard(mat) {
             
               if(gBoard[i][j].isShown && !gBoard[i][j].isMine)   cell=gBoard[i][j].minesAroundCount
              else if(gBoard[i][j].isShown && gBoard[i][j].isMine ||  (gBoard[i][j].isExplode))  cell='<img class="img" src="images/mine.jpeg" alt="">'
-             else if(!gBoard[i][j].isShown && gBoard[i][j].isMarked) cell='f'
+             else if(!gBoard[i][j].isShown && gBoard[i][j].isMarked) cell='🚩'
           
          // else if(mat[i][j].isMine===true) cell='m'
 
             const className = `cell cell-${i}-${j}`
 
             strHTML += `<td>
-            <button class="${className}" onclick="onCellClicked(this, ${i},${j})" oncontextmenu="onRightClick(this, ${i},${j})">
+            <button class="${className}" onclick="onCellClicked( ${i},${j})" oncontextmenu="onRightClick(this, ${i},${j})">
         ${cell}
             </button>
             </td>`

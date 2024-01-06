@@ -1,5 +1,5 @@
 table{
-    margin-top: 50px;
+   
     margin-inline: auto;
 /* background-color: blueviolet; */
 }
@@ -16,8 +16,10 @@ table{
     margin-inline: auto;
 }
 button{
-    font-size: 20px;
-  
+    width: 70px;
+    height: 70px;
+    font-size: 15px;
+  background-color: lightblue
 
 }
 .img{
@@ -25,9 +27,35 @@ button{
     width: 40px;
 
 }
+body{
+    background-image:url(../images/sea.jpeg);
+    background-size: cover;
+    background-repeat: no-repeat;
+}
+.emogicontainer{
+    left: 100px;
+    margin-left: 720px;
+    margin-top: 50px;
+    
+}
 .complete{
-    visibility: hidden;
+    
 }
 .gameplay table{
     background-color: blue;
+}
+.emogi{
+    font-size: 40px;
+    margin-left: 30px;
+    
+}
+.safecelltext{
+    font-size: 10px;
+}
+.ontableimages{
+    height: 50px;
+    width: 50px;
+}
+.hint button{
+    font-size: 30px;
 }
